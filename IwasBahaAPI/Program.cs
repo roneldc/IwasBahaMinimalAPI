@@ -86,4 +86,12 @@ app.MapGet("/api/updates/{id}", async (AppDbContext db, int id) =>
         ? Results.Ok(update)
         : Results.NotFound());
 
+app.MapGet("/", () => "Hello from Railway!");
+
+// Get port from environment variable (provided by Railway)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+
+// Listen on all IP addresses on that port
+app.Urls.Add($"http://*:{port}");
+
 app.Run();
