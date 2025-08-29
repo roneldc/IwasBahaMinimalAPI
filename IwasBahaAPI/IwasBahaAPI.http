@@ -1,0 +1,6 @@
+@IwasBahaAPI_HostAddress = http://localhost:5177
+
+GET {{IwasBahaAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
