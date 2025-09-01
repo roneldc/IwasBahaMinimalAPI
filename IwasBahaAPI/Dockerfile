@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore
-COPY ["IwasBahaAPI.csproj", "./"]
+COPY IwasBahaAPI.csproj ./
 RUN dotnet restore "IwasBahaAPI.csproj"
 
 # Copy everything else and build
@@ -17,14 +17,13 @@ WORKDIR /app
 # Copy published app
 COPY --from=build /app/publish .
 
-# Copy SQLite database file if you already have one (optional)
-# If not, EF Core will create it at runtime
-COPY IwasBahaAPI/roadstatus.db ./roadstatus.db
+# Copy SQLite database
+COPY roadstatus.db ./roadstatus.db
 
-# Render sets PORT env var, so we honor it
+# Set ASP.NET Core URL from environment or default to 5000
 ENV ASPNETCORE_URLS=http://+:${PORT:-5000}
 
-# Expose default port
+# Expose port
 EXPOSE 5000
 
 ENTRYPOINT ["dotnet", "IwasBahaAPI.dll"]
