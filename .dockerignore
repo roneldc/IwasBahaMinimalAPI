@@ -1,32 +1,27 @@
-# Ignore build output
+# Build output
 bin/
 obj/
 out/
-*.user
-*.vspscc
 
-# Ignore Rider/VS Code/Visual Studio settings
+# IDE settings
 .vscode/
 .idea/
 .vs/
 
-# Ignore test results and logs
-TestResults/
+# Logs
 *.log
+TestResults/
 
-# Ignore Docker files that shouldn’t be copied
-Dockerfile
-.dockerignore
-
-# Ignore Git metadata
+# Git metadata
 .git/
 .gitignore
 
-# Ignore OS-specific files
+# OS files
 *.DS_Store
 Thumbs.db
 
-# Ignore temporary files starting with #
-# This addresses the "/#" not found error
-# Adjust if you use any files actually starting with #
+# Temporary or stray folders
+project/
+tmp/
+# Any other stray folders that could trigger Docker checksum errors
 #*#
