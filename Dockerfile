@@ -1,24 +1,30 @@
-# Stage 1: Build
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore dependencies
-COPY ["IwasBahaAPI/IwasBahaAPI.csproj", "IwasBahaAPI/"]
-RUN dotnet restore "IwasBahaAPI/IwasBahaAPI.csproj"
+# Copy csproj and restore
+COPY ["IwasBahaAPI.csproj", "./"]
+RUN dotnet restore "IwasBahaAPI.csproj"
 
 # Copy everything else and build
 COPY . .
-WORKDIR "/src/IwasBahaAPI"
 RUN dotnet publish "IwasBahaAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Stage 2: Runtime
+# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Copy published files from build stage
+# Copy published app
 COPY --from=build /app/publish .
 
-# Note: No EXPOSE command needed because Railway handles port mapping dynamically
+# Copy SQLite database file if you already have one (optional)
+# If not, EF Core will create it at runtime
+COPY app.db ./app.db
 
-# Start the API
+# Render sets PORT env var, so we honor it
+ENV ASPNETCORE_URLS=http://+:${PORT:-5000}
+
+# Expose default port
+EXPOSE 5000
+
 ENTRYPOINT ["dotnet", "IwasBahaAPI.dll"]
