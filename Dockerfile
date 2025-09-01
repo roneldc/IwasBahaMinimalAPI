@@ -19,7 +19,7 @@ COPY --from=build /app/publish .
 
 # Copy SQLite database file if you already have one (optional)
 # If not, EF Core will create it at runtime
-COPY roadstatus.db ./roadstatus.db
+COPY IwasBahaAPI/roadstatus.db ./roadstatus.db
 
 # Render sets PORT env var, so we honor it
 ENV ASPNETCORE_URLS=http://+:${PORT:-5000}
