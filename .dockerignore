@@ -25,3 +25,8 @@ Dockerfile
 # Ignore OS-specific files
 *.DS_Store
 Thumbs.db
+
+# Ignore temporary files starting with #
+# This addresses the "/#" not found error
+# Adjust if you use any files actually starting with #
+#*#
