@@ -1,26 +1,33 @@
-# Use the official .NET SDK image for building
+# ----------------------------
+# Build stage
+# ----------------------------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Copy project files and restore dependencies
-COPY . ./
-RUN dotnet restore
+COPY IwasBahaAPI/IwasBahaAPI.csproj ./IwasBahaAPI.csproj
+RUN dotnet restore ./IwasBahaAPI.csproj
 
-# Build and publish the app
-RUN dotnet publish -c Release -o /app/publish
+# Copy the rest of the project
+COPY IwasBahaAPI/ ./  # includes Program.cs and other files
 
-# Use a smaller runtime image for final container
+# Build and publish
+RUN dotnet publish ./IwasBahaAPI.csproj -c Release -o /app/publish /p:UseAppHost=false
+
+# ----------------------------
+# Runtime stage
+# ----------------------------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Copy the published app
+# Copy published app
 COPY --from=build /app/publish .
 
-# Copy SQLite database
-COPY IwasBahaAPI/roadstatus.db ./roadstatus.db
+# Expose port Render expects
+EXPOSE 10000
 
-# Expose port (Render sets PORT environment variable)
-EXPOSE 80
+# Render sets PORT environment variable
+ENV ASPNETCORE_URLS=http://+:${PORT:-10000}
 
 # Start the application
 ENTRYPOINT ["dotnet", "IwasBahaAPI.dll"]
