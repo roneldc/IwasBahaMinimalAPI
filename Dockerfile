@@ -17,7 +17,7 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Copy SQLite database
-COPY roadstatus.db ./roadstatus.db
+COPY IwasBahaAPI/roadstatus.db ./roadstatus.db
 
 # Expose port (Render sets PORT environment variable)
 EXPOSE 80
